@@ -52,9 +52,9 @@ module.exports.createSession = (req, res, next) => {
 /************************************************************/
 
 module.exports.verifySession = (req, res, next) => {
-
+  
   if (!models.Sessions.isLoggedIn(req.session)) {
-    console.log('NOT VERIFYED!!!!');
+    console.log('NOT VERIFYED!!!!', req.body);
     res.redirect('/login');
   } 
   else {

@@ -39,16 +39,15 @@ describe('', function() {
     /* TODO: Update user and password if different than on your local machine            */
     /*************************************************************************************/
     db = mysql.createConnection({
-      user: 'student',
-      password: 'student',
+      user: 'root',
+      password: '',
       database: 'shortly'
     });
 
     /**************************************************************************************/
     /* TODO: If you create a new MySQL tables, add it to the tablenames collection below. */
     /**************************************************************************************/
-    var tablenames = ['links', 'clicks'
-];
+    var tablenames = ['links', 'clicks','users','sessions'];
 
     db.connect(function(err) {
       if (err) { return done(err); }
@@ -62,7 +61,7 @@ describe('', function() {
     afterEach(function() { server.close(); });
   });
 
-  describe('Database Schema:', function() {
+  xdescribe('Database Schema:', function() {
     it('contains a users table', function(done) {
       var queryString = 'SELECT * FROM users';
       db.query(queryString, function(err, results) {
@@ -184,8 +183,10 @@ describe('', function() {
 
       request(options, function(error, res, body) {
         if (error) { return done(error); }
+        
         request(options, function(err, response, resBody) {
           if (err) { return done(err); }
+          console.log("RESPONSE CODE: ", response.statusCode);          
           expect(response.headers.location).to.equal('/signup');
           done();
         });        
@@ -204,6 +205,7 @@ describe('', function() {
 
       request(options, function(error, res, body) {
         if (error) { return done(error); }
+        console.log("RESPONSE CODE: ", res.statusCode);    
         expect(res.headers.location).to.equal('/');
         done();
       });
@@ -350,18 +352,21 @@ describe('', function() {
         var response = httpMocks.createResponse();
 
         cookieParser(requestWithoutCookies, response, function() {
+          
           var cookies = requestWithoutCookies.cookies;
           expect(cookies).to.be.an('object');
           expect(cookies).to.eql({});
         });
 
         cookieParser(requestWithCookies, response, function() {
+          
           var cookies = requestWithCookies.cookies;
           expect(cookies).to.be.an('object');
           expect(cookies).to.eql({ shortlyid: '8a864482005bcc8b968f2b18f8f7ea490e577b20' });
         });
 
         cookieParser(requestWithMultipleCookies, response, function() {
+          
           var cookies = requestWithMultipleCookies.cookies;
           expect(cookies).to.be.an('object');
           expect(cookies).to.eql({
@@ -630,7 +635,7 @@ describe('', function() {
     });
   });
 
-  xdescribe('Link creation:', function() {
+  describe('Link creation:', function() {
 
     var cookies = request.jar();
     var requestWithSession = request.defaults({ jar: cookies });
@@ -643,7 +648,7 @@ describe('', function() {
       }
     };
 
-    xbeforeEach(function(done) {
+    beforeEach(function(done) {
       var options = {
         'method': 'POST',
         'followAllRedirects': true,
@@ -660,7 +665,7 @@ describe('', function() {
       requestWithSession('http://127.0.0.1:4568/logout', done);
     });
 
-    describe('Creating new links:', function(done) {
+    xdescribe('Creating new links:', function(done) {
 
       it('Only shortens valid urls, returning a 404 - Not found for invalid urls', function(done) {
         var options = {
@@ -734,7 +739,7 @@ describe('', function() {
         db.query('INSERT INTO links SET ?', link, done);
       });
 
-      it('Returns the same shortened code', function(done) {
+      xit('Returns the same shortened code', function(done) {
         var options = {
           'method': 'POST',
           'followAllRedirects': true,
@@ -752,7 +757,7 @@ describe('', function() {
         });
       });
 
-      it('Shortcode redirects to correct url', function(done) {
+      xit('Shortcode redirects to correct url', function(done) {
         var options = {
           'method': 'GET',
           'uri': 'http://127.0.0.1:4568/' + link.code

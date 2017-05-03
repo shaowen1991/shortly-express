@@ -22,6 +22,7 @@
     "ejs": "^2.4.1",
     "express": "^4.13.4",
     "express-partials": "^0.3.0",
+    "express-useragent": "^1.0.7",
     "lodash": "^4.17.4",
     "mysql": "^2.12.0",
     "node-mocks-http": "^1.6.1",
